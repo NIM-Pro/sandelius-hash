@@ -11,10 +11,15 @@ class BitGenerator(
     private var index = 0
     private var temp = source[0].toInt()
     private var bitNumber: Byte = 0
+    private var cycle = false
 
     override operator fun next(): Boolean {
         if (bitNumber >= 8) {
-            index = (index + 1) % source.size
+            index++
+            if (index >= source.size) {
+                cycle = true
+                index %= source.size
+            }
             temp = source[index].toInt()
             bitNumber = 0
         }
@@ -24,4 +29,6 @@ class BitGenerator(
         bitNumber++
         return result
     }
+
+    fun isCycled() = cycle
 }

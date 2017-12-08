@@ -4,6 +4,7 @@ class ByteGenerator(
         private val source: ByteArray
 ) : Generator<Byte> {
     private var index = 0
+    private var cycle = false
 
     init {
         if (source.isEmpty())
@@ -12,7 +13,13 @@ class ByteGenerator(
 
     override operator fun next(): Byte {
         val result = source[index]
-        index = (index + 1) % source.size
+        index++
+        if (index >= source.size) {
+            cycle = true
+            index %= source.size
+        }
         return result
     }
+
+    fun isCycled() = cycle
 }

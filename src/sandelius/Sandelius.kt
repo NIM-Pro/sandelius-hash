@@ -28,10 +28,15 @@ fun MutableList<Byte>.updateHash(
         roundCount: Int = 64
 ) {
     val dataList = data.toMutableList()
-    dataList.add(0, data.size.toByte())
+    dataList.add(data.size.toByte())
     val byteGenerator = ByteGenerator(data)
     val bitGenerator = BitGenerator(data)
-    (1..roundCount).forEach {
+    var roundIndex = 0
+    while ((roundIndex < roundCount) ||
+            (!byteGenerator.isCycled()) ||
+            (!bitGenerator.isCycled())
+            ) {
+        roundIndex++
         shuffle(this, bitGenerator)
         this.forEachIndexed { index, element ->
             if (bitGenerator.next())
